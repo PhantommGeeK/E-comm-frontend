@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { AddToCartRequest, Cart } from '../model/Cart';
+import { AddToCartRequest, Cart, UpdateCartItemRequest } from '../model/Cart';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +45,29 @@ export class CartService {
     }
 
     return this.http.get<Cart>(`${this.apiUrl}/${resolvedCartId}`).pipe(
+      tap((cart) => this.setCart(cart))
+    );
+  }
+
+  updateItemQuantity(productId: number, quantity: number): Observable<Cart> {
+    const cartId = this.getStoredCartId();
+    if (!cartId) {
+      throw new Error('Cart ID is not available');
+    }
+
+    const request: UpdateCartItemRequest = { quantity };
+    return this.http.put<Cart>(`${this.apiUrl}/${cartId}/items/${productId}`, request).pipe(
+      tap((cart) => this.setCart(cart))
+    );
+  }
+
+  removeItem(productId: number): Observable<Cart> {
+    const cartId = this.getStoredCartId();
+    if (!cartId) {
+      throw new Error('Cart ID is not available');
+    }
+
+    return this.http.delete<Cart>(`${this.apiUrl}/${cartId}/items/${productId}`).pipe(
       tap((cart) => this.setCart(cart))
     );
   }

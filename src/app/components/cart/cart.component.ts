@@ -15,6 +15,8 @@ export class CartComponent implements OnInit {
   cart: Cart | null = null;
   loading = true;
   error: string | null = null;
+  actionError: string | null = null;
+  processingProductId: number | null = null;
 
   constructor(private cartService: CartService) {}
 
@@ -27,5 +29,61 @@ export class CartComponent implements OnInit {
     if (!this.cartService.getCartSnapshot()) {
       this.loading = false;
     }
+  }
+
+  increaseQuantity(productId: number, currentQuantity: number): void {
+    this.updateQuantity(productId, currentQuantity + 1);
+  }
+
+  decreaseQuantity(productId: number, currentQuantity: number): void {
+    if (currentQuantity <= 1) {
+      return;
+    }
+
+    this.updateQuantity(productId, currentQuantity - 1);
+  }
+
+  onQuantityInputChange(productId: number, value: string): void {
+    const parsedQuantity = Number(value);
+    if (!Number.isInteger(parsedQuantity) || parsedQuantity <= 0) {
+      this.actionError = 'Quantity must be a positive whole number.';
+      return;
+    }
+
+    this.updateQuantity(productId, parsedQuantity);
+  }
+
+  removeItem(productId: number): void {
+    this.processingProductId = productId;
+    this.actionError = null;
+
+    this.cartService.removeItem(productId).subscribe({
+      next: () => {
+        this.processingProductId = null;
+      },
+      error: () => {
+        this.processingProductId = null;
+        this.actionError = 'Unable to remove item from cart.';
+      }
+    });
+  }
+
+  isProcessing(productId: number): boolean {
+    return this.processingProductId === productId;
+  }
+
+  private updateQuantity(productId: number, quantity: number): void {
+    this.processingProductId = productId;
+    this.actionError = null;
+
+    this.cartService.updateItemQuantity(productId, quantity).subscribe({
+      next: () => {
+        this.processingProductId = null;
+      },
+      error: () => {
+        this.processingProductId = null;
+        this.actionError = 'Unable to update item quantity.';
+      }
+    });
   }
 }

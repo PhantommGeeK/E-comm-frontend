@@ -16,6 +16,7 @@
     </div>
 
     <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <div *ngIf="actionError" class="alert alert-warning">{{ actionError }}</div>
 
     <div *ngIf="!loading && cart && cart.items.length > 0" class="row g-4">
       <div class="col-lg-8">
@@ -28,8 +29,48 @@
                 {{ item.quantity }} x {{ item.unitPrice | currency:'INR':'symbol':'1.0-2' }}
               </p>
             </div>
-            <div class="item-total">
-              {{ item.lineTotal | currency:'INR':'symbol':'1.0-2' }}
+            <div class="item-actions">
+              <div class="quantity-controls">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm"
+                  (click)="decreaseQuantity(item.productId, item.quantity)"
+                  [disabled]="isProcessing(item.productId) || item.quantity <= 1"
+                >
+                  -
+                </button>
+
+                <input
+                  type="number"
+                  min="1"
+                  class="form-control form-control-sm quantity-input"
+                  [value]="item.quantity"
+                  (change)="onQuantityInputChange(item.productId, $any($event.target).value)"
+                  [disabled]="isProcessing(item.productId)"
+                />
+
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm"
+                  (click)="increaseQuantity(item.productId, item.quantity)"
+                  [disabled]="isProcessing(item.productId)"
+                >
+                  +
+                </button>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-outline-danger btn-sm"
+                (click)="removeItem(item.productId)"
+                [disabled]="isProcessing(item.productId)"
+              >
+                Remove
+              </button>
+
+              <div class="item-total">
+                {{ item.lineTotal | currency:'INR':'symbol':'1.0-2' }}
+              </div>
             </div>
           </div>
         </div>

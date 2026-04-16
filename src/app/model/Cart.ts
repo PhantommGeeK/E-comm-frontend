@@ -4,6 +4,10 @@ export interface AddToCartRequest {
   quantity: number;
 }
 
+export interface UpdateCartItemRequest {
+  quantity: number;
+}
+
 export interface CartItem {
   productId: number;
   productName: string;

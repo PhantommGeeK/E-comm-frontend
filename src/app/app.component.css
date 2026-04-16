@@ -1,0 +1,42 @@
+.navbar {
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  z-index: 1000;
+}
+
+.brand-icon {
+  background: var(--background);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.brand-text {
+  font-size: 1.25rem;
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: var(--text-muted) !important;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--primary) !important;
+  background-color: var(--background);
+}
+
+.nav-link.active {
+  color: var(--primary) !important;
+  background-color: var(--background);
+  font-weight: 700;
+}
+
+main {
+  min-height: calc(100vh - 200px);
+}

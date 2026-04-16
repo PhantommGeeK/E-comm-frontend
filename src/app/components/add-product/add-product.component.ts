@@ -87,7 +87,12 @@ export class AddProductComponent implements OnDestroy {
           return;
         }
 
-        alert('Failed to add product. Please try again.');
+        const errorMessage =
+          typeof err.error === 'string' && err.error.trim().length > 0
+            ? err.error
+            : 'Failed to add product. Please try again.';
+
+        alert(errorMessage);
       }
     });
   }

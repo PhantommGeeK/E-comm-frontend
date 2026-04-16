@@ -5,13 +5,19 @@
     <div class="underline mx-auto"></div>
   </div>
 
+  <div *ngIf="feedbackMessage" class="alert alert-success shadow-sm">
+    <i class="bi bi-check-circle-fill me-2"></i>{{ feedbackMessage }}
+  </div>
+
+  <div *ngIf="feedbackError" class="alert alert-danger shadow-sm">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ feedbackError }}
+  </div>
+
   <div class="row g-4">
     <div class="col-xl-3 col-lg-4 col-md-6" *ngFor="let p of products">
       <div class="card product-card h-100" (click)="viewProduct(p.id)">
         <div class="product-image-wrapper">
-          <img [src]="getProductImage(p)"
-               class="card-img-top"
-               [alt]="p.name">
+          <img [src]="getProductImage(p)" class="card-img-top" [alt]="p.name">
           <div class="product-overlay">
             <span class="btn btn-light btn-sm rounded-pill px-3">View Details</span>
           </div>
@@ -27,7 +33,7 @@
           <p class="brand-text mb-2">{{ p.brand }}</p>
 
           <div class="d-flex justify-content-between align-items-center mt-3">
-            <span class="price-tag h5 mb-0">₹{{ p.price }}</span>
+            <span class="price-tag h5 mb-0">{{ p.price | currency:'INR':'symbol':'1.0-2' }}</span>
             <span class="stock-status" [ngClass]="p.available ? 'text-success' : 'text-danger'">
               <i class="bi" [ngClass]="p.available ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"></i>
               {{ p.available ? 'In Stock' : 'Out' }}
@@ -36,8 +42,12 @@
         </div>
 
         <div class="card-footer bg-transparent border-0 pb-3">
-          <button class="btn btn-primary w-100" (click)="$event.stopPropagation()">
-            <i class="bi bi-cart-plus me-2"></i> Add to Cart
+          <button
+            class="btn btn-primary w-100"
+            [disabled]="!p.available || addingProductId === p.id"
+            (click)="$event.stopPropagation(); addToCart(p)">
+            <i class="bi bi-cart-plus me-2"></i>
+            {{ addingProductId === p.id ? 'Adding...' : (p.available ? 'Add to Cart' : 'Unavailable') }}
           </button>
         </div>
       </div>

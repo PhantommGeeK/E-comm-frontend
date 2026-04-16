@@ -1,8 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ProductService } from '../../services/product.service';
 import { Product } from '../../model/Product';
-import { CommonModule } from '@angular/common';
+import { CartService } from '../../services/cart.service';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -13,13 +14,17 @@ import { CommonModule } from '@angular/common';
 })
 export class ProductDetailComponent implements OnInit {
   product: Product | undefined;
-  loading: boolean = true;
+  loading = true;
   error: string | null = null;
+  cartMessage: string | null = null;
+  cartError: string | null = null;
+  addingToCart = false;
 
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private router: Router
+    private router: Router,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -49,5 +54,26 @@ export class ProductDetailComponent implements OnInit {
 
   getProductImage(): string {
     return this.product ? this.productService.getProductImageUrl(this.product) : '';
+  }
+
+  addToCart(): void {
+    if (!this.product?.id || !this.product.available) {
+      return;
+    }
+
+    this.addingToCart = true;
+    this.cartMessage = null;
+    this.cartError = null;
+
+    this.cartService.addItem(this.product.id).subscribe({
+      next: (cart) => {
+        this.cartMessage = `${this.product?.name} added to cart. ${cart.totalItems} item(s) in cart.`;
+        this.addingToCart = false;
+      },
+      error: () => {
+        this.cartError = 'Unable to add this product to the cart right now.';
+        this.addingToCart = false;
+      }
+    });
   }
 }

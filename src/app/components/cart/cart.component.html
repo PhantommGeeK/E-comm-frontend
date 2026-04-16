@@ -1,0 +1,62 @@
+<div class="container mt-5">
+  <div class="cart-shell">
+    <div class="cart-header">
+      <div>
+        <p class="eyebrow mb-2">Your Cart</p>
+        <h1 class="mb-2">Review your selected items</h1>
+        <p class="text-muted mb-0">Everything added from the product pages appears here.</p>
+      </div>
+      <a routerLink="/" class="btn btn-outline-secondary">Continue Shopping</a>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+    <div *ngIf="!loading && cart && cart.items.length > 0" class="row g-4">
+      <div class="col-lg-8">
+        <div class="cart-items">
+          <div class="cart-item" *ngFor="let item of cart.items">
+            <div>
+              <p class="item-brand mb-1">{{ item.brand }}</p>
+              <h5 class="mb-1">{{ item.productName }}</h5>
+              <p class="text-muted mb-0">
+                {{ item.quantity }} x {{ item.unitPrice | currency:'INR':'symbol':'1.0-2' }}
+              </p>
+            </div>
+            <div class="item-total">
+              {{ item.lineTotal | currency:'INR':'symbol':'1.0-2' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="summary-card">
+          <p class="summary-label">Cart ID</p>
+          <h4 class="mb-4">#{{ cart.cartId }}</h4>
+
+          <div class="summary-row">
+            <span>Items</span>
+            <strong>{{ cart.totalItems }}</strong>
+          </div>
+          <div class="summary-row total-row">
+            <span>Total</span>
+            <strong>{{ cart.totalAmount | currency:'INR':'symbol':'1.0-2' }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && (!cart || cart.items.length === 0)" class="empty-cart text-center py-5">
+      <i class="bi bi-cart-x display-4 text-muted"></i>
+      <h3 class="mt-3">Your cart is empty</h3>
+      <p class="text-muted">Add something from the catalog to start building your order.</p>
+      <a routerLink="/" class="btn btn-primary mt-2">Browse Products</a>
+    </div>
+  </div>
+</div>

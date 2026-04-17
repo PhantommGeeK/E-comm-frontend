@@ -17,6 +17,7 @@
 
     <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
     <div *ngIf="actionError" class="alert alert-warning">{{ actionError }}</div>
+    <div *ngIf="orderSuccessMessage" class="alert alert-success">{{ orderSuccessMessage }}</div>
 
     <div *ngIf="!loading && cart && cart.items.length > 0" class="row g-4">
       <div class="col-lg-8">
@@ -89,6 +90,13 @@
             <span>Total</span>
             <strong>{{ cart.totalAmount | currency:'INR':'symbol':'1.0-2' }}</strong>
           </div>
+
+          <button class="btn btn-primary w-100 mt-3" [disabled]="placingOrder" (click)="placeOrder()">
+            <i class="bi bi-bag-check me-2"></i>
+            {{ placingOrder ? 'Placing Order...' : 'Place Order' }}
+          </button>
+
+          <a routerLink="/orders" class="btn btn-outline-secondary w-100 mt-2">View Orders</a>
         </div>
       </div>
     </div>

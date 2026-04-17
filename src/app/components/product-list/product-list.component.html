@@ -5,6 +5,33 @@
     <div class="underline mx-auto"></div>
   </div>
 
+  <div class="search-shell mb-4">
+    <div class="search-label">Search by Category</div>
+    <div class="input-group search-group">
+      <span class="input-group-text bg-transparent border-0">
+        <i class="bi bi-search"></i>
+      </span>
+      <input
+        type="text"
+        class="form-control border-0"
+        placeholder="Try Electronics, Fashion, Books..."
+        [(ngModel)]="categorySearch"
+        (keyup.enter)="searchByCategory()">
+      <button class="btn btn-primary" type="button" (click)="searchByCategory()">Search</button>
+      <button
+        *ngIf="categorySearch"
+        class="btn btn-outline-secondary"
+        type="button"
+        (click)="clearCategorySearch()">
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="searchingCategory" class="mb-3">
+    <span class="badge bg-light text-dark border">Showing results for: {{ categorySearch }}</span>
+  </div>
+
   <div *ngIf="feedbackMessage" class="alert alert-success shadow-sm">
     <i class="bi bi-check-circle-fill me-2"></i>{{ feedbackMessage }}
   </div>

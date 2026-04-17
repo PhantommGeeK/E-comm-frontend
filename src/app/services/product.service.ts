@@ -18,6 +18,10 @@ export class ProductService {
     return this.http.get<Product[]>(this.apiUrl);
   }
 
+  searchProductsByCategory(category: string): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.apiUrl}/search?category=${encodeURIComponent(category)}`);
+  }
+
   getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }

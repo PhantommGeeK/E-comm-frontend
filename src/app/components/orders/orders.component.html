@@ -1,0 +1,92 @@
+<div class="container mt-5">
+  <div class="orders-shell">
+    <div class="orders-header">
+      <div>
+        <p class="eyebrow mb-2">Orders</p>
+        <h1 class="mb-2">Track and review your orders</h1>
+        <p class="text-muted mb-0">View all placed orders and inspect individual order items by order ID.</p>
+      </div>
+      <a routerLink="/" class="btn btn-outline-secondary">Continue Shopping</a>
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <div class="search-shell mb-4">
+      <div class="search-label">Find Order Items by Order ID</div>
+      <div class="input-group search-group">
+        <span class="input-group-text bg-transparent border-0">#</span>
+        <input
+          type="number"
+          min="1"
+          class="form-control border-0"
+          placeholder="Enter order ID"
+          [(ngModel)]="orderIdSearch"
+          (keyup.enter)="searchItemsByOrderId()">
+        <button class="btn btn-primary" type="button" (click)="searchItemsByOrderId()">View Items</button>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && orders.length > 0" class="row g-4">
+      <div class="col-lg-7">
+        <div class="orders-list">
+          <div class="order-card" *ngFor="let order of orders">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <div>
+                <p class="order-id mb-1">Order #{{ order.orderId }}</p>
+                <p class="mb-1 text-muted">{{ order.createdAt | date:'medium' }}</p>
+                <span class="status-pill">{{ order.status }}</span>
+              </div>
+              <button class="btn btn-outline-primary btn-sm" (click)="viewItems(order.orderId)">View Items</button>
+            </div>
+            <div class="summary-row mt-3">
+              <span>{{ order.totalItems }} item(s)</span>
+              <strong>{{ order.totalAmount | currency:'INR':'symbol':'1.0-2' }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="items-card">
+          <h5 class="mb-3">Order Items</h5>
+          <p *ngIf="selectedOrderId" class="text-muted small mb-3">Showing items for Order #{{ selectedOrderId }}</p>
+
+          <div *ngIf="loadingItems" class="text-center py-4">
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!loadingItems && selectedOrderItems.length > 0" class="items-list">
+            <div class="item-row" *ngFor="let item of selectedOrderItems">
+              <div>
+                <p class="item-brand mb-1">{{ item.brand }}</p>
+                <h6 class="mb-1">{{ item.productName }}</h6>
+                <p class="text-muted mb-0">{{ item.quantity }} x {{ item.unitPrice | currency:'INR':'symbol':'1.0-2' }}</p>
+              </div>
+              <strong>{{ item.lineTotal | currency:'INR':'symbol':'1.0-2' }}</strong>
+            </div>
+          </div>
+
+          <div *ngIf="!loadingItems && selectedOrderItems.length === 0" class="text-muted text-center py-4">
+            Pick an order to view its items.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && orders.length === 0" class="text-center py-5">
+      <i class="bi bi-receipt display-4 text-muted"></i>
+      <h3 class="mt-3">No orders yet</h3>
+      <p class="text-muted">Place your first order from the cart page.</p>
+      <a routerLink="/cart" class="btn btn-primary">Go to Cart</a>
+    </div>
+  </div>
+</div>

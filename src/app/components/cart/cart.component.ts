@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { Cart } from '../../model/Cart';
+import { OrderService } from '../../services/order.service';
 
 @Component({
   selector: 'app-cart',
@@ -14,11 +15,17 @@ import { Cart } from '../../model/Cart';
 export class CartComponent implements OnInit {
   cart: Cart | null = null;
   loading = true;
+  placingOrder = false;
+  orderSuccessMessage: string | null = null;
   error: string | null = null;
   actionError: string | null = null;
   processingProductId: number | null = null;
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private orderService: OrderService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.cartService.cart$.subscribe((cart) => {
@@ -83,6 +90,34 @@ export class CartComponent implements OnInit {
       error: () => {
         this.processingProductId = null;
         this.actionError = 'Unable to update item quantity.';
+      }
+    });
+  }
+
+  placeOrder(): void {
+    if (!this.cart || this.cart.items.length === 0) {
+      this.error = 'Your cart is empty.';
+      return;
+    }
+
+    const cartId = this.cart.cartId;
+    this.placingOrder = true;
+    this.error = null;
+    this.orderSuccessMessage = null;
+
+    this.orderService.placeOrder(cartId).subscribe({
+      next: (order) => {
+        this.orderSuccessMessage = `Order #${order.orderId} has been placed.`;
+        this.cartService.loadCart(cartId).subscribe({
+          complete: () => {
+            this.placingOrder = false;
+            this.router.navigate(['/orders'], { queryParams: { placed: order.orderId } });
+          }
+        });
+      },
+      error: () => {
+        this.error = 'Could not place order right now.';
+        this.placingOrder = false;
       }
     });
   }

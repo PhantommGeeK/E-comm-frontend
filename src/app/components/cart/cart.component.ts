@@ -115,8 +115,21 @@ export class CartComponent implements OnInit {
           }
         });
       },
-      error: () => {
-        this.error = 'Could not place order right now.';
+      error: (err) => {
+        if (err?.status === 400 && typeof err?.error?.message === 'string') {
+          this.error = err.error.message;
+        } else if (err?.status === 400 && typeof err?.error === 'string') {
+          this.error = err.error;
+        } else if (err?.status === 404) {
+          this.error = 'Cart not found. Please add an item again.';
+        } else {
+          this.error = 'Could not place order right now.';
+        }
+
+        if (this.error?.toLowerCase().includes('cart is empty')) {
+          this.cartService.loadCart(cartId).subscribe();
+        }
+
         this.placingOrder = false;
       }
     });

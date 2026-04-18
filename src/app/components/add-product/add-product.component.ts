@@ -82,14 +82,27 @@ export class AddProductComponent implements OnDestroy {
       },
       error: (err) => {
         console.error("ERROR:", err);
+        if (err.status === 401 || err.status === 403) {
+          alert('Your session is invalid or expired. Please login again and retry.');
+          this.router.navigate(['/login']);
+          return;
+        }
+
         if (err.status === 413) {
           alert('Image is too large. Please use an image smaller than 1 MB.');
+          return;
+        }
+
+        if (err.status === 415) {
+          alert('Unsupported image upload format. Please choose a valid image file and try again.');
           return;
         }
 
         const errorMessage =
           typeof err.error === 'string' && err.error.trim().length > 0
             ? err.error
+            : typeof err.error?.message === 'string' && err.error.message.trim().length > 0
+              ? err.error.message
             : 'Failed to add product. Please try again.';
 
         alert(errorMessage);

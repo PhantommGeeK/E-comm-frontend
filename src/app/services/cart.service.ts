@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, tap, throwError } from 'rxjs';
 import { AddToCartRequest, Cart, UpdateCartItemRequest } from '../model/Cart';
 
 @Injectable({
@@ -27,14 +27,28 @@ export class CartService {
   }
 
   addItem(productId: number, quantity: number = 1): Observable<Cart> {
+    const storedCartId = this.getStoredCartId();
     const request: AddToCartRequest = {
-      cartId: this.getStoredCartId() ?? undefined,
+      cartId: storedCartId ?? undefined,
       productId,
       quantity
     };
 
     return this.http.post<Cart>(`${this.apiUrl}/items`, request).pipe(
-      tap((cart) => this.setCart(cart))
+      tap((cart) => this.setCart(cart)),
+      catchError((error) => {
+        // Recover automatically when a previously stored cart no longer exists on the server.
+        if (error?.status === 404 && storedCartId) {
+          this.clearCart();
+
+          const retryRequest: AddToCartRequest = { productId, quantity };
+          return this.http.post<Cart>(`${this.apiUrl}/items`, retryRequest).pipe(
+            tap((cart) => this.setCart(cart))
+          );
+        }
+
+        return throwError(() => error);
+      })
     );
   }
 

@@ -16,6 +16,7 @@ export class AppComponent {
 
   readonly cart$ = this.cartService.cart$;
   readonly authState$ = this.authService.authState$;
+  readonly role$ = this.authService.role$;
 
   constructor(
     private cartService: CartService,
@@ -25,6 +26,10 @@ export class AppComponent {
 
   get username(): string {
     return this.authService.getUsername() ?? 'User';
+  }
+
+  get isAdmin(): boolean {
+    return this.authService.isAdmin();
   }
 
   logout(): void {

@@ -1,88 +1,59 @@
-<div class="container mt-5">
+<div class="container py-4 py-lg-5">
   <div *ngIf="loading" class="text-center py-5">
-    <div class="spinner-border text-primary" role="status">
+    <div class="spinner-border" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
     <p class="mt-3 text-muted">Fetching product details...</p>
   </div>
 
-  <div *ngIf="error" class="alert alert-danger text-center shadow-sm">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
+  <div *ngIf="error" class="alert text-center">
+    {{ error }}
     <div class="mt-3">
-      <button class="btn btn-outline-danger" (click)="goBack()">Back to Products</button>
+      <button class="btn btn-outline-secondary" (click)="goBack()">Back to Products</button>
     </div>
   </div>
 
-  <div *ngIf="!loading && product" class="product-detail-card animate-fade-in">
-    <div class="row g-0">
-      <div class="col-lg-6 product-image-section">
-        <div class="image-container p-4">
-          <img [src]="getProductImage()" class="img-fluid rounded-4 shadow-lg" [alt]="product.name">
-        </div>
-      </div>
-      <div class="col-lg-6 product-info-section p-5">
-        <div *ngIf="cartMessage" class="alert alert-success shadow-sm">
-          <i class="bi bi-check-circle-fill me-2"></i>{{ cartMessage }}
-        </div>
-
-        <div *ngIf="cartError" class="alert alert-danger shadow-sm">
-          <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ cartError }}
-        </div>
-
-        <nav aria-label="breadcrumb" class="mb-4">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a (click)="goBack()" class="text-primary cursor-pointer">Products</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ product.category }}</li>
-          </ol>
-        </nav>
-
+  <section *ngIf="!loading && product" class="paper-panel newsprint-texture">
+    <div class="row g-0 grid-frame">
+      <div class="col-lg-7 p-4 p-lg-5 grid-border-r">
+        <p class="section-label mb-2">Feature Article</p>
         <h1 class="display-5 mb-2">{{ product.name }}</h1>
-        <p class="h4 text-muted mb-4">{{ product.brand }}</p>
+        <p class="h5 text-muted mb-4">{{ product.brand }}</p>
 
-        <div class="d-flex align-items-center mb-4">
-          <span class="h2 text-primary fw-bold mb-0">{{ product.price | currency:'INR':'symbol':'1.0-2' }}</span>
-          <span class="ms-3 badge" [ngClass]="product.available ? 'badge-success' : 'badge-danger'">
-            {{ product.available ? 'In Stock' : 'Unavailable' }}
-          </span>
+        <p class="drop-cap text-justify mb-4">
+          {{ product.description || 'This premium product is designed to meet high expectations, balancing performance and craftsmanship in every detail.' }}
+        </p>
+
+        <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
+          <span class="h3 mb-0">{{ product.price | currency:'INR':'symbol':'1.0-2' }}</span>
+          <span class="badge">{{ product.available ? 'In Stock' : 'Unavailable' }}</span>
         </div>
 
-        <div class="description-section mb-5">
-          <h5 class="fw-bold mb-3 text-uppercase small letter-spacing">Description</h5>
-          <p class="text-secondary leading-relaxed">
-            {{ product.description || 'This premium product is designed to meet your highest expectations. Performance and style combined into one seamless experience.' }}
-          </p>
-        </div>
+        <div *ngIf="cartMessage" class="alert mb-3">{{ cartMessage }}</div>
+        <div *ngIf="cartError" class="alert mb-3">{{ cartError }}</div>
 
-        <div class="specs-section mb-5">
-          <div class="row g-3">
-            <div class="col-6">
-              <div class="spec-item p-3 rounded-4 bg-light border">
-                <span class="d-block text-muted small">Category</span>
-                <span class="fw-bold">{{ product.category }}</span>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="spec-item p-3 rounded-4 bg-light border">
-                <span class="d-block text-muted small">Quantity</span>
-                <span class="fw-bold">{{ product.quantity }} units</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="actions-section d-grid gap-3 d-sm-flex">
-          <button
-            class="btn btn-primary btn-lg px-5 flex-grow-1"
+        <div class="d-grid gap-2 d-sm-flex">
+          <button class="btn btn-primary px-5"
             [disabled]="!product.available || addingToCart"
             (click)="addToCart()">
-            <i class="bi bi-cart-plus me-2"></i>
             {{ addingToCart ? 'Adding...' : (product.available ? 'Add to Cart' : 'Unavailable') }}
           </button>
-          <button class="btn btn-outline-secondary btn-lg px-4" (click)="goBack()">
-            Return
-          </button>
+          <button class="btn btn-outline-secondary" (click)="goBack()">Return</button>
         </div>
       </div>
+
+      <aside class="col-lg-5 p-4 p-lg-5">
+        <div class="detail-image mb-3">
+          <img [src]="getProductImage()" class="w-100" [alt]="product.name">
+        </div>
+        <p class="meta-line mb-1">Fig. 2.1 | Product Plate</p>
+        <p class="meta-line mb-3">Category: {{ product.category }} | Quantity: {{ product.quantity }}</p>
+
+        <section class="inverted-section p-3">
+          <p class="section-label mb-2">Dispatch Note</p>
+          <p class="mb-0">This listing is maintained under the current edition and updates in real-time with inventory operations.</p>
+        </section>
+      </aside>
     </div>
-  </div>
+  </section>
 </div>

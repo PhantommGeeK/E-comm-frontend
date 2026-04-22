@@ -27,6 +27,7 @@ export class AddProductComponent implements OnDestroy {
   selectedImageFile: File | null = null;
   imagePreviewUrl: string | null = null;
   imageStatusMessage = '';
+  validationMessage = '';
   processingImage = false;
 
   constructor(private service: ProductService, private router: Router) {}
@@ -65,8 +66,16 @@ export class AddProductComponent implements OnDestroy {
   }
 
   addProduct(): void {
+    this.validationMessage = '';
+
     if (this.processingImage) {
       alert('Image is still being prepared. Please wait a moment and try again.');
+      return;
+    }
+
+    const validationError = this.validateProduct();
+    if (validationError) {
+      this.validationMessage = validationError;
       return;
     }
 
@@ -189,6 +198,35 @@ export class AddProductComponent implements OnDestroy {
     const lastDotIndex = fileName.lastIndexOf('.');
     const baseName = lastDotIndex > 0 ? fileName.slice(0, lastDotIndex) : fileName;
     return `${baseName}-optimized.jpg`;
+  }
+
+  private validateProduct(): string | null {
+    if (!this.product.name.trim()) {
+      return 'Product name is required.';
+    }
+
+    if (!this.product.brand.trim()) {
+      return 'Brand is required.';
+    }
+
+    if (!this.product.category.trim()) {
+      return 'Category is required.';
+    }
+
+    if (!Number.isFinite(this.product.price) || this.product.price <= 0) {
+      return 'Price must be greater than 0.';
+    }
+
+    if (!Number.isInteger(this.product.quantity) || this.product.quantity < 0) {
+      return 'Quantity must be 0 or more.';
+    }
+
+    const descriptionLength = this.product.description.trim().length;
+    if (descriptionLength < 10) {
+      return 'Description must be at least 10 characters.';
+    }
+
+    return null;
   }
 
   ngOnDestroy(): void {

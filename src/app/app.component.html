@@ -1,60 +1,45 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
+<nav class="navbar navbar-expand-lg sticky-top">
   <div class="container py-2">
-    <a class="navbar-brand fw-bold d-flex align-items-center" routerLink="/">
-      <div class="brand-icon me-2">
-        <i class="bi bi-lightning-charge-fill text-primary"></i>
-      </div>
-      <span class="brand-text">E-COMMERCE</span>
+    <a class="navbar-brand fw-bold d-flex align-items-center" routerLink="/" aria-label="ShopNova home">
+      <span class="brand-text">SHOPNOVA</span>
     </a>
-    
-    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+    <button class="navbar-toggler border border-dark shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    
+
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto gap-2">
+      <ul class="navbar-nav ms-auto gap-2 align-items-lg-center">
         <li class="nav-item">
-          <a class="nav-link rounded-pill px-3" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-            <i class="bi bi-house-door me-1"></i> Home
-          </a>
+          <a class="nav-link px-3" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+        </li>
+        <li class="nav-item" *ngIf="isAdmin">
+          <a class="nav-link px-3" routerLink="/add" routerLinkActive="active">Add Product</a>
+        </li>
+        <li class="nav-item" *ngIf="isAdmin">
+          <a class="nav-link px-3" routerLink="/admin/users" routerLinkActive="active">User Roles</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link rounded-pill px-3" routerLink="/add" routerLinkActive="active">
-            <i class="bi bi-plus-circle me-1"></i> Add Product
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link rounded-pill px-3" routerLink="/orders" routerLinkActive="active">
-            <i class="bi bi-receipt-cutoff me-1"></i> Orders
-          </a>
+          <a class="nav-link px-3" routerLink="/orders" routerLinkActive="active">Orders</a>
         </li>
 
         <li class="nav-item" *ngIf="!(authState$ | async)">
-          <a class="nav-link rounded-pill px-3" routerLink="/login" routerLinkActive="active">
-            <i class="bi bi-box-arrow-in-right me-1"></i> Login
-          </a>
+          <a class="nav-link px-3" routerLink="/login" routerLinkActive="active">Login</a>
         </li>
         <li class="nav-item" *ngIf="!(authState$ | async)">
-          <a class="nav-link rounded-pill px-3" routerLink="/signup" routerLinkActive="active">
-            <i class="bi bi-person-plus me-1"></i> Signup
-          </a>
+          <a class="nav-link px-3" routerLink="/signup" routerLinkActive="active">Signup</a>
         </li>
 
         <li class="nav-item" *ngIf="authState$ | async">
-          <span class="nav-link rounded-pill px-3 user-chip">
-            <i class="bi bi-person-check me-1"></i>{{ username }}
-          </span>
+          <span class="nav-link px-3 user-chip">{{ username }}</span>
         </li>
 
         <li class="nav-item" *ngIf="authState$ | async">
-          <button class="btn btn-outline-secondary rounded-pill px-3" (click)="logout()">
-            <i class="bi bi-box-arrow-right me-1"></i> Logout
-          </button>
+          <button class="btn btn-outline-secondary px-3" (click)="logout()">Logout</button>
         </li>
 
         <li class="nav-item ms-lg-3" *ngIf="authState$ | async">
-          <a class="btn btn-primary rounded-pill px-4 shadow-sm" routerLink="/cart">
-            <i class="bi bi-cart3 me-1"></i>
+          <a class="btn btn-primary px-4" routerLink="/cart">
             Cart ({{ (cart$ | async)?.totalItems ?? 0 }})
           </a>
         </li>
@@ -63,12 +48,27 @@
   </div>
 </nav>
 
+<section class="ticker inverted-section pg-pattern-stripes">
+  <div class="container py-2 d-flex align-items-center gap-3 overflow-hidden">
+    <!-- <span class="ticker-badge">Breaking</span> -->
+    <div class="ticker-track meta-line" aria-label="Site metadata ticker">
+      <span class="me-4">FREE DELIVERY ON ORDERS ABOVE ₹999</span>
+      <span class="me-4">BUY 2 GET 1 ON SELECT ACCESSORIES</span>
+      <span class="me-4">NEW ARRIVALS DROPPING DAILY</span>
+      <span class="me-4">SECURE PAYMENTS & INSTANT ORDER UPDATES</span>
+      <span class="me-4">EXCLUSIVE DEALS EVERY WEEKEND</span>
+      
+    </div>
+  </div>
+</section>
+
 <main>
   <router-outlet></router-outlet>
 </main>
 
-<footer class="bg-white border-top mt-5 py-4">
-  <div class="container text-center text-muted">
-    <p class="mb-0">&copy; 2026 E-Commerce. All rights reserved.</p>
+<footer class="border-top border-dark mt-5 py-4 newsprint-texture">
+  <div class="container d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+    
+    <p class="mb-0 meta-line">&copy; 2026 ShopNova</p>
   </div>
 </footer>

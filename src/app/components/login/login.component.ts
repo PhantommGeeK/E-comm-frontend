@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   username = '';
   password = '';
+  submitted = false;
   loading = false;
   errorMessage: string | null = null;
 
@@ -23,10 +24,21 @@ export class LoginComponent {
   ) {}
 
   onSubmit(): void {
+    this.submitted = true;
     this.errorMessage = null;
 
     if (!this.username.trim() || !this.password) {
       this.errorMessage = 'Username and password are required.';
+      return;
+    }
+
+    if (this.username.trim().length < 3) {
+      this.errorMessage = 'Username must be at least 3 characters.';
+      return;
+    }
+
+    if (this.password.length < 6) {
+      this.errorMessage = 'Password must be at least 6 characters.';
       return;
     }
 

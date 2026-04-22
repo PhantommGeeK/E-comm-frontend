@@ -1,48 +1,34 @@
-.navbar {
-  backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.8) !important;
-  z-index: 1000;
-}
-
-.brand-icon {
-  background: var(--background);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-}
-
 .brand-text {
-  font-size: 1.25rem;
-  letter-spacing: 1px;
+  font-size: clamp(1.1rem, 2.3vw, 1.8rem);
+  color: var(--pg-foreground);
 }
 
-.nav-link {
+.ticker {
+  border-top: var(--pg-border-width) solid var(--pg-foreground);
+  border-bottom: var(--pg-border-width) solid var(--pg-foreground);
+}
+
+.ticker-track {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  animation: ticker-scroll 22s linear infinite;
+  will-change: transform;
   font-weight: 500;
-  color: var(--text-muted) !important;
-  transition: all 0.2s ease;
 }
 
-.nav-link:hover {
-  color: var(--primary) !important;
-  background-color: var(--background);
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-40%);
+  }
 }
 
-.nav-link.active {
-  color: var(--primary) !important;
-  background-color: var(--background);
-  font-weight: 700;
-}
-
-.user-chip {
-  color: var(--primary) !important;
-  background: rgba(99, 102, 241, 0.1);
-  border: 1px solid rgba(99, 102, 241, 0.2);
-}
-
-main {
-  min-height: calc(100vh - 200px);
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
 }

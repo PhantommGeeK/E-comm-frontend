@@ -15,6 +15,7 @@ export class SignupComponent {
   username = '';
   password = '';
   confirmPassword = '';
+  submitted = false;
   loading = false;
   errorMessage: string | null = null;
 
@@ -24,10 +25,16 @@ export class SignupComponent {
   ) {}
 
   onSubmit(): void {
+    this.submitted = true;
     this.errorMessage = null;
 
     if (!this.username.trim() || !this.password) {
       this.errorMessage = 'Username and password are required.';
+      return;
+    }
+
+    if (this.username.trim().length < 3) {
+      this.errorMessage = 'Username must be at least 3 characters.';
       return;
     }
 

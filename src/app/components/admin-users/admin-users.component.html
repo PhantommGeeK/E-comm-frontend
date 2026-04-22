@@ -1,0 +1,57 @@
+<div class="container py-4 py-lg-5">
+  <section class="paper-panel p-4 p-lg-5 newsprint-texture">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3 border-bottom border-dark pb-4 mb-4">
+      <div>
+        <p class="section-label mb-2">Admin Console</p>
+        <h1 class="mb-2">User Roles</h1>
+        <p class="text-muted mb-0">Assign admin access without touching the database directly.</p>
+      </div>
+      <a routerLink="/" class="btn btn-outline-secondary">Back to Store</a>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div *ngIf="message" class="alert mb-4">{{ message }}</div>
+    <div *ngIf="errorMessage" class="alert mb-4">{{ errorMessage }}</div>
+
+    <div *ngIf="!loading" class="grid-frame">
+      <div class="row g-0 fw-semibold text-uppercase meta-line px-3 py-2">
+        <div class="col-md-4">User</div>
+        <div class="col-md-3">Role</div>
+        <div class="col-md-2">Status</div>
+        <div class="col-md-3 text-md-end">Action</div>
+      </div>
+
+      <div class="row g-0 user-row align-items-center px-3 py-3" *ngFor="let user of users">
+        <div class="col-md-4 mb-2 mb-md-0">
+          <div class="fw-semibold">{{ user.username }}</div>
+          <div class="meta-line">User ID {{ user.id }}</div>
+        </div>
+
+        <div class="col-md-3 mb-2 mb-md-0">
+          <select
+            class="form-select"
+            [(ngModel)]="user.role"
+            [ngModelOptions]="{standalone: true}"
+            [name]="'role-' + user.id"
+            (ngModelChange)="saveRole(user, $event)">
+            <option value="ROLE_USER">ROLE_USER</option>
+            <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+          </select>
+        </div>
+
+        <div class="col-md-2 mb-2 mb-md-0">
+          <span class="badge">{{ user.enabled ? 'Enabled' : 'Disabled' }}</span>
+        </div>
+
+        <div class="col-md-3 text-md-end">
+          <span *ngIf="savingUserId === user.id" class="meta-line">Saving...</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
